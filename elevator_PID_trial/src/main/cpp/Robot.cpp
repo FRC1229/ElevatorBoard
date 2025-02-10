@@ -30,13 +30,13 @@ units::volt_t kA = 2_V/0.5_mps_sq;
 
 
 // Creates a PIDController with gains kP, kI, and kD
-frc::ProfiledPIDController<units::meters> pid(
+frc::ProfiledPIDController<units::meters> m_controller(
    kP, kI, kD, 
-   frc::TrapezoidProfile<units::meters>::Constraints{0.3_mps, 0.3_mps});
+   frc::TrapezoidProfile<units::meters>::Constraints{0.3_mps, 0.3_mps_sq});
 frc::ElevatorFeedforward m_feedforward(kS, kG, kV, kA);
 
-frc::TrapezoidProfile<units::meters>::State state1{2_m, 0_mps};
-frc::TrapezoidProfile<units::meters>::State state2{0.5_m, 0_mps};
+frc::TrapezoidProfile<units::meters>::State goal1{2_m, 0_mps};
+frc::TrapezoidProfile<units::meters>::State goal2{0.5_m, 0_mps};
 
 using namespace rev::spark;
   // initialize motors
@@ -100,10 +100,14 @@ double highSoftLimit=44;
 
 
 //PID control move to position 1
+// if (stick.GetRawButton(1)){
+//   units::meter_t setpointPosition= 1_m;
+//    autoSpeed=0.7*pid.Calculate(elevatorPosition, setpointPosition);
+//    m_motor_11.SetVoltage(feedforwardOutput + pidOutput);
+//    //m_motor_12.Set(autoSpeed);
+//     }
 if (stick.GetRawButton(1)){
-  units::meter_t setpointPosition= 1_m;
-   autoSpeed=0.7*pid.Calculate(elevatorPosition, setpointPosition);
-   m_motor_11.SetVoltage(feedforwardOutput + pidOutput);
+  m_motor_11.SetGoal(goal1);
    //m_motor_12.Set(autoSpeed);
     }
 
