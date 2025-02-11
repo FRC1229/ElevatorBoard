@@ -20,7 +20,7 @@ frc::Joystick stick(0);
 // Define PID variable and initilize
 
 double kP=0.02;
-double kI=0.1;
+double kI=0.0;
 double kD=0.00;
 units::volt_t kS = 4_V;
 units::volt_t kG = 2_V;
@@ -35,8 +35,8 @@ frc::ProfiledPIDController<units::meters> m_controller(
    frc::TrapezoidProfile<units::meters>::Constraints{0.3_mps, 0.3_mps_sq});
 frc::ElevatorFeedforward m_feedforward(kS, kG, kV, kA);
 
-frc::TrapezoidProfile<units::meters>::State goal1{2_m, 0_mps};
-frc::TrapezoidProfile<units::meters>::State goal2{0.5_m, 0_mps};
+frc::TrapezoidProfile<units::meters>::State goal1;
+frc::TrapezoidProfile<units::meters>::State goal;
 
 using namespace rev::spark;
   // initialize motors
@@ -45,6 +45,7 @@ using namespace rev::spark;
   
   //SparkMax m_motor_12{12, SparkMax::MotorType::kBrushless};
   
+  //rev::spark::SparkRelativeEncoder encoder(m_motor_11.GetRel);
   rev::spark::SparkRelativeEncoder encoder(m_motor_11.GetEncoder());
 
 
@@ -81,9 +82,8 @@ double encoderValue=encoder.GetPosition();
 double manualSpeed=0;
 double autoSpeed=0;
 units::meter_t elevatorPosition = units::meter_t((encoderValue/0.786)+2);
-units::volt_t pidOutput = units::volt_t{pid.Calculate(elevatorPosition)};
-units::volt_t feedforwardOutput = m_feedforward.Calculate(state1.position, state1.velocity);
-
+units::volt_t pidOutput = units::volt_t{m_controller.Calculate(elevatorPosition)};
+units::volt_t feedforwardOutput = m_feedforward.Calculate(goal1.position, goal1.velocity);
 
 double lowSoftLimit=4;
 double highSoftLimit=44;
@@ -107,18 +107,20 @@ double highSoftLimit=44;
 //    //m_motor_12.Set(autoSpeed);
 //     }
 if (stick.GetRawButton(1)){
-  m_motor_11.SetGoal(goal1);
+  goal = {1_m, 0_mps};
+  
    //m_motor_12.Set(autoSpeed);
     }
 
  //PID control move to position 2
 else if (stick.GetRawButton(2)){
-   m_motor_11.SetVoltage(feedforwardOutput + pidOutput);
+   goal = {0.5_m, 0_mps};
    //m_motor_12.Set(autoSpeed);
     }  
 
  //manual control
 else {
+
  
  //manual control within soft limits
 //   if(elevatorPosition>lowSoftLimit&&elevatorPosition<highSoftLimit){
@@ -145,6 +147,12 @@ else {
 //    //m_motor_12.Set(0);
 // }
 }
+
+m_controller.SetGoal(goal);
+m_motor_11.SetVoltage(
+        units::volt_t{
+            m_controller.Calculate(units::meter_t{encoder.GetPosition()*0.786 + 2})} +
+        m_feedforward.Calculate(m_controller.GetSetpoint().velocity));
 
      
 
