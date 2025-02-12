@@ -10,14 +10,16 @@
 #include <frc/controller/PIDController.h>
 #include <rev/SparkAbsoluteEncoder.h>
 #include <algorithm>
+#include <units/time.h>
 
 frc::Joystick stick(0);
 
 // Define PID variable and initilize
 
-double kP=0.02;
-double kI=0;
+double kP=0.03;
+double kI=0.001;
 double kD=0.00;
+double autoAccelFactor;
 
 
 // Creates a PIDController with gains kP, kI, and kD
@@ -68,11 +70,13 @@ double elevatorPosition=(encoderValue/0.786)+2;
 
 double lowSoftLimit=4;
 double highSoftLimit=44;
+double autoSpeedLimit=0.4;
+
 
 
 //manual speed from stick, deadband of 0.2
 if (stick.GetRawAxis(1)>0.2||stick.GetRawAxis(1)<-0.2){
-   manualSpeed=0.1*stick.GetRawAxis(1);
+   manualSpeed=-0.1*stick.GetRawAxis(1);
     }
 
 else {
@@ -83,18 +87,36 @@ else {
 //PID control move to position 1
 if (stick.GetRawButton(1)){
   setpointPosition=10;
-   autoSpeed=0.7*pid.Calculate(elevatorPosition,setpointPosition);
+if(autoAccelFactor<1)
+{
+   autoAccelFactor=autoAccelFactor+0.02;
+   
+}
+   autoSpeed=autoSpeedLimit*autoAccelFactor*pid.Calculate(elevatorPosition,setpointPosition);
    m_motor_11.Set(autoSpeed);
    m_motor_12.Set(autoSpeed);
-    }
+   
+}
+
+   
+    
 
  //PID control move to position 2
 else if (stick.GetRawButton(2)){
   setpointPosition=30;
-   autoSpeed=0.7*pid.Calculate(elevatorPosition,setpointPosition);
+
+if(autoAccelFactor<1)
+{
+autoAccelFactor=autoAccelFactor+0.02;
+
+}
+   
+   autoSpeed=autoSpeedLimit*autoAccelFactor*pid.Calculate(elevatorPosition,setpointPosition);
    m_motor_11.Set(autoSpeed);
    m_motor_12.Set(autoSpeed);
-    }  
+}
+   
+    
 
  //manual control
 else {
@@ -125,13 +147,19 @@ if((elevatorPosition>highSoftLimit&&manualSpeed>0)||(elevatorPosition<lowSoftLim
 }
 }
 
-     
+if (stick.GetRawButton(1)==0&&stick.GetRawButton(2)==0)
+{
+   autoAccelFactor=0;
+}   
 
 frc::SmartDashboard::PutNumber("Encoder Raw", encoderValue);
 frc::SmartDashboard::PutNumber("Auto Speed", autoSpeed);
 frc::SmartDashboard::PutNumber("Manual Speed", manualSpeed);
 frc::SmartDashboard::PutNumber("Setpoint", setpointPosition);
 frc::SmartDashboard::PutNumber("Actual Position", elevatorPosition);
+frc::SmartDashboard::PutNumber("Accel Factor", autoAccelFactor);
+frc::SmartDashboard::PutNumber("Speed Limit", autoSpeedLimit);
+
 
 
 
