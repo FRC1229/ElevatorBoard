@@ -26,8 +26,8 @@ double kI=0.0;
 double kD=0.00;
 units::volt_t kS = 4_V;
 units::volt_t kG = 2_V;
-units::volt_t kV = 2_V/0.5_mps;
-units::volt_t kA = 2_V/0.5_mps_sq;
+auto kV = 2_V/(0.5_mps);
+auto kA = 2_V/(0.5_mps_sq);
 
 
 
@@ -47,9 +47,7 @@ using namespace rev::spark;
   
   //rev::spark::SparkRelativeEncoder encoder(m_motor_11.GetRel);
   rev::spark::SparkRelativeEncoder encoder(m_motor_11.GetEncoder());
-
-
-
+  
 
 
 
@@ -79,8 +77,8 @@ void Robot::TeleopPeriodic() {
 
 
 
-double lowSoftLimit=4;
-double highSoftLimit=44;
+//double lowSoftLimit=4;
+//double highSoftLimit=44;
 
 
 //manual speed from stick, deadband of 0.2
@@ -142,11 +140,15 @@ else {
 // }
 }
 
+double circumference = 0.47; // Pre-calculated circumference in meters
+double revolutions = encoder.GetPosition(); // Get revolutions from encoder
+double distanceInMeters = revolutions * circumference; // Convert to meters
+
 m_controller.SetGoal(goal);
-m_motor_11.SetVoltage(
-        units::volt_t{
-            m_controller.Calculate(units::meter_t{encoder.GetPosition()*0.786_m + 2_m})} +
-        m_feedforward.Calculate(m_controller.GetSetpoint().velocity));
+units::meter_t ePosition = units::meter_t{distanceInMeters*0.786_m + 2_m};
+units::volt_t pidCalc = units::volt_t{m_controller.Calculate(units::meter_t(ePosition))};
+units::volt_t feedForwardCalc = m_feedforward.Calculate(m_controller.GetSetpoint().velocity);
+m_motor_11.SetVoltage(pidCalc + feedForwardCalc);
 
 
 
@@ -161,7 +163,7 @@ m_motor_11.SetVoltage(
 
 
 
-    }
+}
 
     
     
