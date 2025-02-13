@@ -14,6 +14,8 @@
 #include <algorithm>
 #include <units/voltage.h>
 #include <units/length.h>
+#include <units/velocity.h>
+#include <units/acceleration.h>
 
 frc::Joystick stick(0);
 
@@ -34,8 +36,6 @@ frc::ProfiledPIDController<units::meters> m_controller(
    kP, kI, kD, 
    frc::TrapezoidProfile<units::meters>::Constraints{0.3_mps, 0.3_mps_sq});
 frc::ElevatorFeedforward m_feedforward(kS, kG, kV, kA);
-
-frc::TrapezoidProfile<units::meters>::State goal1;
 frc::TrapezoidProfile<units::meters>::State goal;
 
 using namespace rev::spark;
@@ -77,13 +77,7 @@ m_motor_11.SetInverted(true);
 void Robot::TeleopPeriodic() {
 
 
-double setpointPosition=0;
-double encoderValue=encoder.GetPosition();
-double manualSpeed=0;
-double autoSpeed=0;
-units::meter_t elevatorPosition = units::meter_t((encoderValue/0.786)+2);
-units::volt_t pidOutput = units::volt_t{m_controller.Calculate(elevatorPosition)};
-units::volt_t feedforwardOutput = m_feedforward.Calculate(goal1.position, goal1.velocity);
+
 
 double lowSoftLimit=4;
 double highSoftLimit=44;
@@ -151,15 +145,17 @@ else {
 m_controller.SetGoal(goal);
 m_motor_11.SetVoltage(
         units::volt_t{
-            m_controller.Calculate(units::meter_t{encoder.GetPosition()*0.786 + 2})} +
+            m_controller.Calculate(units::meter_t{encoder.GetPosition()*0.786_m + 2_m})} +
         m_feedforward.Calculate(m_controller.GetSetpoint().velocity));
+
+
 
      
 
-frc::SmartDashboard::PutNumber("Encoder Raw", encoderValue);
-frc::SmartDashboard::PutNumber("Auto Speed", autoSpeed);
-frc::SmartDashboard::PutNumber("Manual Speed", manualSpeed);
-frc::SmartDashboard::PutNumber("Setpoint", setpointPosition);
+// frc::SmartDashboard::PutNumber("Encoder Raw", encoderValue);
+// frc::SmartDashboard::PutNumber("Auto Speed", autoSpeed);
+// frc::SmartDashboard::PutNumber("Manual Speed", manualSpeed);
+// frc::SmartDashboard::PutNumber("Setpoint", setpointPosition);
 //frc::SmartDashboard::PutNumber("Actual Position", elevatorPosition);
 
 
