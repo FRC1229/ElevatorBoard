@@ -8,7 +8,22 @@
 #include <rev/SparkAbsoluteEncoder.h>
 #include <frc/controller/ProfiledPIDController.h>
 #include <frc/controller/PIDController.h>
+#include <frc/controller/ElevatorFeedforward.h>
 #include <rev/SparkMax.h>
+#include <algorithm>
+#include <units/voltage.h>
+#include <units/length.h>
+#include <units/velocity.h>
+#include <units/acceleration.h>
+#include <frc/trajectory/TrapezoidProfile.h>
+
+double kP=0.02;
+double kI=0.0;
+double kD=0.00;
+units::volt_t kS = 4_V;
+units::volt_t kG = 2_V;
+auto kV = 2_V/(0.5_mps);
+auto kA = 2_V/(0.5_mps_sq);
 
 
 class ElevatorSubsystem : public frc2::SubsystemBase {
@@ -35,38 +50,18 @@ class ElevatorSubsystem : public frc2::SubsystemBase {
   void L4CoralPosition();
 
   //CHANGE THESE PLEASE
-    frc::PIDController HomePositionTopElevatorPID{
-    0.3,0.001,0
-  };
-    frc::PIDController HomePositionBottomElevatorPID{
-    0.3,0.001,0
-  };
-    frc::PIDController L1CoralTopElevatorPID{
-    0.3,0.001,0
-  };
-    frc::PIDController L1CoralBottomElevatorPID{
-    0.3,0.001,0
-  };
-    frc::PIDController L2CoralTopElevatorPID{
-    0.3,0.001,0
-  };
-    frc::PIDController L2CoralBottomElevatorPID{
-    0.3,0.001,0
-  };
-    frc::PIDController L3CoralTopElevatorPID{
-    0.3,0.001,0
-  };
-    frc::PIDController L3CoralBottomElevatorPID{
-    0.3,0.001,0
-  };
-    frc::PIDController L4CoralTopElevatorPID{
-    0.3,0.001,0
-  };
-    frc::PIDController L4CoralBottomElevatorPID{
-    0.3,0.001,0
-  };
+
+  
+
+    // Creates a PIDController with gains kP, kI, and kD
+  frc::ProfiledPIDController<units::meters> m_controller(
+    0.02, kI, kD, 
+    frc::TrapezoidProfile<units::meters>::Constraints{0.3_mps, 0.3_mps_sq});
+  frc::ElevatorFeedforward m_feedforward(kS, kG, kV, kA);
+  frc::TrapezoidProfile<units::meters>::State goal;
 
  private:
   // Components (e.g. motor controllers and sensors) should generally be
   // declared private and exposed only through public methods.
+  double kP=0.02;
 };

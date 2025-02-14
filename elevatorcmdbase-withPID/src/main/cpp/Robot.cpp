@@ -5,11 +5,8 @@
 #include "Robot.h"
 
 #include <frc2/command/CommandScheduler.h>
-#include "commands/HomePosition.cpp"
-#include "commands/L1CoralPosition.cpp"
-#include "commands/L2CoralPosition.cpp"
-#include "commands/L3CoralPosition.cpp"
-#include "commands/L4CoralPosition.cpp"
+
+
 Robot::Robot() {}
 
 /**
@@ -44,6 +41,7 @@ void Robot::AutonomousInit() {
 void Robot::AutonomousPeriodic() {}
 
 void Robot::TeleopInit() {
+  
 
 }
 

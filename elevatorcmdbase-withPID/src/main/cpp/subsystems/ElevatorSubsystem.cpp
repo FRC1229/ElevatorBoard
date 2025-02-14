@@ -21,6 +21,7 @@ void ElevatorSubsystem::Periodic() {}
 #include <rev/SparkMax.h>
 #include <frc/controller/PIDController.h>
 
+
 ElevatorSubsystem::ElevatorSubsystem():
 m_ElevatorMotorBottom(11, rev::spark::SparkMax::MotorType::kBrushless),
 m_ElevatorMotorTop(12, rev::spark::SparkMax::MotorType::kBrushless),
@@ -36,6 +37,8 @@ void ElevatorSubsystem::SetInverted() {
     m_ElevatorMotorBottom.SetInverted(true);
     m_ElevatorMotorTop.SetInverted(false);
 }
+
+
 
 // This method will be called once per scheduler run
 void ElevatorSubsystem::Periodic() {
@@ -53,21 +56,27 @@ void ElevatorSubsystem::SetElevatorSpeed(double speed){
 
 void ElevatorSubsystem::HomePosition(){
     // Set the SetPoints here
-    double TopElevatorSetPoint = 1;
-    double BottomElevatorSetPoint = 1;
+    m_ElevatorMotorBottom.SetInverted(true);
+    m_ElevatorMotorTop.SetInverted(false);
 
-    double degrees = readEncoder(m_ElevatorEncoderTop.GetPosition());
-    double volt = HomePositionTopElevatorPID.Calculate(degrees, TopElevatorSetPoint);
-    frc::SmartDashboard::PutNumber("volt calc", volt);
-    m_ElevatorMotorTop.SetVoltage(units::volt_t{volt});
+    double setPoint = 0.5;
+    double encoderValueTop = m_ElevatorEncoderBottom.GetPosition();
+    double encoderValueBottom = m_ElevatorEncoderTop.GetPosition();
+    double elevatorPosition = (encoderValueTop/0.786)+2;
+    double autoAccelFactor = 0;
+    double autospeed = 0;
 
-     double degrees = readEncoder(m_ElevatorEncoderBottom.GetPosition());
-    double volt = HomePositionBottomElevatorPID.Calculate(degrees, BottomElevatorSetPoint);
-    frc::SmartDashboard::PutNumber("volt calc", volt);
-    m_ElevatorMotorBottom.SetVoltage(units::volt_t{volt});
+    if (autoAccelFactor < 1)
+    {
+
+        
+    }
+
 }
 
 void ElevatorSubsystem::L1CoralPosition(){
+    m_ElevatorMotorBottom.SetInverted(true);
+    m_ElevatorMotorTop.SetInverted(false);
     // Set the SetPoints here
     double TopElevatorSetPoint = 1;
     double BottomElevatorSetPoint = 1;
@@ -84,6 +93,8 @@ void ElevatorSubsystem::L1CoralPosition(){
 }
 
 void ElevatorSubsystem::L2CoralPosition(){
+    m_ElevatorMotorBottom.SetInverted(true);
+    m_ElevatorMotorTop.SetInverted(false);
     // Set the SetPoints here
     double TopElevatorSetPoint = 1;
     double BottomElevatorSetPoint = 1;
@@ -99,6 +110,8 @@ void ElevatorSubsystem::L2CoralPosition(){
     m_ElevatorMotorBottom.SetVoltage(units::volt_t{volt});
 }
 void ElevatorSubsystem::L3CoralPosition(){
+    m_ElevatorMotorBottom.SetInverted(true);
+    m_ElevatorMotorTop.SetInverted(false);
     // Set the SetPoints here
     double TopElevatorSetPoint = 1;
     double BottomElevatorSetPoint = 1;
@@ -115,6 +128,8 @@ void ElevatorSubsystem::L3CoralPosition(){
 }
 
 void ElevatorSubsystem::L4CoralPosition(){
+    m_ElevatorMotorBottom.SetInverted(true);
+    m_ElevatorMotorTop.SetInverted(false);
     // Set the SetPoints here
     double TopElevatorSetPoint = 1;
     double BottomElevatorSetPoint = 1;

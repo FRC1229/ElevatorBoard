@@ -22,4 +22,8 @@ RobotContainer::RobotContainer() {
 
 void RobotContainer::ConfigureBindings() {
   
+  frc2::JoystickButton(&r_controller, frc::XboxController::Button::kA).OnTrue(HomePosition(&m_elevatorSubsystem).ToPtr());
+  frc2::JoystickButton(&r_controller, frc::XboxController::Button::kB).OnTrue(L1CoralPosition(&m_elevatorSubsystem).ToPtr());
+  frc2::JoystickButton(&r_controller, frc::XboxController::Button::kY).OnTrue(L2CoralPosition(&m_elevatorSubsystem).ToPtr());
+  frc2::JoystickButton(&r_controller, frc::XboxController::Button::kX).OnTrue(L3CoralPosition(&m_elevatorSubsystem).ToPtr());
 }
