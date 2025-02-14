@@ -17,6 +17,10 @@
 #include <units/velocity.h>
 #include <units/acceleration.h>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
@@ -188,8 +192,11 @@ frc::SmartDashboard::PutNumber("Distance for encoder 12", distanceInMeters12);
 
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
 =======
+=======
+>>>>>>> Stashed changes
 
     }
 >>>>>>> Stashed changes
