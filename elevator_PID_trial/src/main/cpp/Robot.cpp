@@ -16,8 +16,13 @@
 #include <units/length.h>
 #include <units/velocity.h>
 #include <units/acceleration.h>
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
 
 frc::Joystick stick(0);
+
 
 // Define PID variable and initilize
 
@@ -182,7 +187,12 @@ frc::SmartDashboard::PutNumber("Distance for encoder 12", distanceInMeters12);
 
 
 
+<<<<<<< Updated upstream
 }
+=======
+
+    }
+>>>>>>> Stashed changes
 
     
     
