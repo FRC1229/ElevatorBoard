@@ -5,8 +5,9 @@
 #include "subsystems/LEDSubsystem.h"
 
 
-
-
+frc::AddressableLED m_led{8};
+std::array<frc::AddressableLED::LEDData, kLength>
+    m_ledBuffer;
 
 LEDSubsystem::LEDSubsystem()
 {

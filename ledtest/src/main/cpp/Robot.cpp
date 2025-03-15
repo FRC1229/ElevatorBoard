@@ -8,11 +8,7 @@
 
 
 
-Robot::Robot() {
-  // m_led.SetLength(kLength);
-  // m_led.SetData(m_ledBuffer);
-  // m_led.Start();
-}
+Robot::Robot() {}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use

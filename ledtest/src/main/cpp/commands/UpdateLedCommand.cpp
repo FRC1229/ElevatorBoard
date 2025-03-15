@@ -38,9 +38,6 @@ UpdateLEDCommand::UpdateLEDCommand(LEDSubsystem* LED, frc::Joystick* joystick, f
 void UpdateLEDCommand::Initialize() {
   m_ledTimer->Reset();
   m_ledTimer->Start();
-  frc::AddressableLED m_led{8};
-  std::array<frc::AddressableLED::LEDData, 121>
-      m_ledBuffer;
   
 }
 
@@ -55,43 +52,70 @@ void UpdateLEDCommand::Execute() {
     
   // }
 //m_Led->IdleMove(0,0,255,1,21);
-frc::LEDPattern red = frc::LEDPattern::Solid(frc::Color::kRed);
-red.ApplyTo(m_ledBuffer);
-m_led.SetData(m_ledBuffer);
+
+
+
+// frc::LEDPattern red = frc::LEDPattern::Solid(frc::Color::kBlue);
+// red.ApplyTo(m_ledBuffer);
+// m_led.SetData(m_ledBuffer);
 
 
 
 
 
 
- // Our LED strip has a density of 120 LEDs per meter
+//  // Our LED strip has a density of 120 LEDs per meter
   units::meter_t kLedSpacing{1 / 120.0};
 
-  // Create an LED pattern that will display a rainbow across
-  // all hues at maximum saturation and half brightness
-  // frc::LEDPattern m_rainbow = frc::LEDPattern::Rainbow(255, 128);
+//   // Create an LED pattern that will display a rainbow across
+//   // all hues at maximum saturation and half brightness
+//   frc::LEDPattern m_rainbow = frc::LEDPattern::Rainbow(255, 128);
 
-  // // Create a new pattern that scrolls the rainbow pattern across the LED
-  // // strip, moving at a speed of 1 meter per second.
-  // frc::LEDPattern m_scrollingRainbow =
-  //     m_rainbow.ScrollAtAbsoluteSpeed(1_mps, kLedSpacing);
+//   // Create a new pattern that scrolls the rainbow pattern across the LED
+//   // strip, moving at a speed of 1 meter per second.
+//   frc::LEDPattern m_scrollingRainbow =
+//       m_rainbow.ScrollAtAbsoluteSpeed(1_mps, kLedSpacing);
 
-  //     // Run the rainbow pattern and apply it to the buffer
-  // m_scrollingRainbow.ApplyTo(m_ledBuffer);
-  // // Set the LEDs
-  // m_led.SetData(m_ledBuffer);
+//       // Run the rainbow pattern and apply it to the buffer
+//   m_scrollingRainbow.ApplyTo(m_ledBuffer);
+//   // Set the LEDs
+//   m_led.SetData(m_ledBuffer);
 
 
    
      
-  // if (m_DriveController->GetRawButton(1)) {
-  //     m_ledTimer->Start();
-  //     if (m_ledTimer->Get().value() < 2) {
-  //        m_Led->SetLedColor(0,0,255,121);
-  //     }
-  //     m_ledTimer->Stop();  
-  //     m_ledTimer->Reset();
-  // }
+  if (m_DriveController->GetRawButton(1)) {
+      frc::LEDPattern m_rainbow = frc::LEDPattern::Rainbow(255, 128);
+      frc::LEDPattern m_scrollingRainbow =
+      m_rainbow.ScrollAtAbsoluteSpeed(1_mps, kLedSpacing);
+      m_scrollingRainbow.ApplyTo(m_ledBuffer);
+      m_led.SetData(m_ledBuffer);
+
+  } else if (m_DriveController->GetRawButton(2)) {
+    std::array<frc::Color, 2> colors{frc::Color::kRed, frc::Color::kBlue};
+    frc::LEDPattern gradient = frc::LEDPattern::Gradient(frc::LEDPattern::GradientType::kContinuous, colors);
+    gradient.ApplyTo(m_ledBuffer);  
+    m_led.SetData(m_ledBuffer);
+
+  } else if (m_DriveController->GetRawButton(3)) {
+    std::array<std::pair<double, frc::Color>, 2> maskSteps{std::pair{0.0, frc::Color::kWhite},
+                                                  std::pair{0.5, frc::Color::kBlack}};
+  frc::LEDPattern base = frc::LEDPattern::Rainbow(255, 255);
+  frc::LEDPattern mask = frc::LEDPattern::Steps(maskSteps).ScrollAtRelativeSpeed(units::hertz_t{0.25});
+
+  frc::LEDPattern pattern =  base.Mask(mask);
+
+  } else if (m_DriveController->GetRawButton(4)) {
+    std::array<frc::Color, 2> colors{frc::Color::kGreen, frc::Color::kBlue};
+    frc::LEDPattern base = frc::LEDPattern::Gradient(frc::LEDPattern::GradientType::kDiscontinuous, colors);
+   frc:: LEDPattern pattern = base.Breathe(2_s);
+
+    // Apply the LED pattern to the data buffer
+    pattern.ApplyTo(m_ledBuffer);
+
+    // Write the data to the LED strip
+    m_led.SetData(m_ledBuffer);
+  }
 
 
    // } else {
