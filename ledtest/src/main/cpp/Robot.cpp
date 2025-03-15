@@ -6,7 +6,13 @@
 
 #include <frc2/command/CommandScheduler.h>
 
-Robot::Robot() {}
+
+
+Robot::Robot() {
+  // m_led.SetLength(kLength);
+  // m_led.SetData(m_ledBuffer);
+  // m_led.Start();
+}
 
 /**
  * This function is called every 20 ms, no matter the mode. Use
@@ -18,6 +24,7 @@ Robot::Robot() {}
  */
 void Robot::RobotPeriodic() {
   frc2::CommandScheduler::GetInstance().Run();
+  
 }
 
 /**

@@ -11,17 +11,23 @@
 
 #include <subsystems/LEDSubsystem.h>
 
+#include "Robot.h"
+
 #include <frc/smartdashboard/SmartDashboard.h>
 
 #include <frc/Timer.h>
+
+#include <frc/AddressableLED.h>
 
 
 
 UpdateLEDCommand::UpdateLEDCommand(LEDSubsystem* LED, frc::Joystick* joystick, frc::Timer* m_ledTimer): m_Led(LED), m_DriveController(joystick), m_ledTimer(m_ledTimer) {
 
   // Use addRequirements() here to declare subsystem dependencies.
-
+  //m_led.Start();
   AddRequirements(m_Led);
+  //m_led.SetLength(121);
+  
 
 }
 
@@ -29,28 +35,63 @@ UpdateLEDCommand::UpdateLEDCommand(LEDSubsystem* LED, frc::Joystick* joystick, f
 
 // Called when the command is initially scheduled.
 
-void UpdateLEDCommand::Initialize() {}
+void UpdateLEDCommand::Initialize() {
+  m_ledTimer->Reset();
+  m_ledTimer->Start();
+  frc::AddressableLED m_led{8};
+  std::array<frc::AddressableLED::LEDData, 121>
+      m_ledBuffer;
+  
+}
 
 
 
 // Called repeatedly when this Command is scheduled to run
 
 void UpdateLEDCommand::Execute() {
+  // for (int i = 1; i < 101; i++) {
+  //   m_Led->SetLedColor(0,0,255,i,121);
+  //   m_Led->SetLedColor(0,0,0,i-1,121);
+    
+  // }
+//m_Led->IdleMove(0,0,255,1,21);
+frc::LEDPattern red = frc::LEDPattern::Solid(frc::Color::kRed);
+red.ApplyTo(m_ledBuffer);
+m_led.SetData(m_ledBuffer);
 
 
-  
 
-   // if (m_DriveController->GetRawButton(2)) {
 
-      
-   //    m_ledTimer->Start();
-   //    if (m_ledTimer->Get().value() < 0.5) {
-   //       m_Led->SetLedColor(255,0,0,121);
-   //    } 
-   //    if (m_ledTimer->Get().value() > 0.5 && m_ledTimer->Get().value() < 1) {
-   //       m_Led->SetLedColor(0,255,0,121);
-   //       m_ledTimer->Reset();
-   //    } 
+
+
+ // Our LED strip has a density of 120 LEDs per meter
+  units::meter_t kLedSpacing{1 / 120.0};
+
+  // Create an LED pattern that will display a rainbow across
+  // all hues at maximum saturation and half brightness
+  // frc::LEDPattern m_rainbow = frc::LEDPattern::Rainbow(255, 128);
+
+  // // Create a new pattern that scrolls the rainbow pattern across the LED
+  // // strip, moving at a speed of 1 meter per second.
+  // frc::LEDPattern m_scrollingRainbow =
+  //     m_rainbow.ScrollAtAbsoluteSpeed(1_mps, kLedSpacing);
+
+  //     // Run the rainbow pattern and apply it to the buffer
+  // m_scrollingRainbow.ApplyTo(m_ledBuffer);
+  // // Set the LEDs
+  // m_led.SetData(m_ledBuffer);
+
+
+   
+     
+  // if (m_DriveController->GetRawButton(1)) {
+  //     m_ledTimer->Start();
+  //     if (m_ledTimer->Get().value() < 2) {
+  //        m_Led->SetLedColor(0,0,255,121);
+  //     }
+  //     m_ledTimer->Stop();  
+  //     m_ledTimer->Reset();
+  // }
 
 
    // } else {

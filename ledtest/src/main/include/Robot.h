@@ -25,5 +25,6 @@ class Robot : public frc::TimedRobot {
 
  private:
 
+  frc::AddressableLED m_led{8};
   RobotContainer m_container;
 };
