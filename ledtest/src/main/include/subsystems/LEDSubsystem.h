@@ -10,7 +10,7 @@
 #include <frc/util/Color.h>
 #include <frc/Timer.h>
 
-static constexpr int kLength = 60;
+static constexpr int kLength = 120;
 
 extern frc::AddressableLED m_led;
 extern std::array<frc::AddressableLED::LEDData, kLength>
