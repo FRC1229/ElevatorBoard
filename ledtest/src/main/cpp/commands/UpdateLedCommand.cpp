@@ -21,6 +21,7 @@
 
 #include <array>
 #include <frc/AddressableLED.h>
+#include <frc/LEDPattern.h>
 
 
 UpdateLEDCommand::UpdateLEDCommand(LEDSubsystem* LED, frc::Joystick* joystick, frc::Timer* m_ledTimer): m_Led(LED), m_DriveController(joystick), m_ledTimer(m_ledTimer) {
@@ -72,14 +73,20 @@ void UpdateLEDCommand::Execute() {
 
   std::array<frc::AddressableLED::LEDData, 120> m_buffer;
 
-  std::ranges::view<frc::AddressableLED::LEDData>;
-  auto m_right = std::ranges::reverse_view(std::ranges::drop_view(m_buffer, 60));
 
-  std::ranges::view<frc::AddressableLED::LEDData>;
-  auto m_left = std::ranges::take_view(m_buffer, 60);
+  //std::array<frc::AddressableLED::LEDData, 120> m_buffer;
 
-  std::vector<frc::AddressableLED::LEDData> left_buffer(m_left.begin(), m_left.end());
-  std::vector<frc::AddressableLED::LEDData> right_buffer(m_right.end(), m_right.begin());
+// Create a view for the left section (first 60 LEDs)
+auto m_left = std::ranges::take_view(m_buffer, 60);
+
+// Create a reversed view for the right section (last 60 LEDs)
+auto m_right = std::ranges::reverse_view(std::ranges::drop_view(m_buffer, 60));
+
+
+  
+  //std::vector<frc::AddressableLED::LEDData> right_buffer(m_right.begin(), m_right.end());
+  //std::vector<frc::AddressableLED::LEDData> left_buffer(m_left.begin(), m_left.end());
+  //std::vector<frc::AddressableLED::LEDData> right_buffer(m_right.begin(), m_right.end());
 
    
      
@@ -104,8 +111,8 @@ void UpdateLEDCommand::Execute() {
 
   else if (m_DriveController->GetRawButton(2)) {
     frc::LEDPattern blue = frc::LEDPattern::Solid(frc::Color::kBlue);
-  blue.ApplyTo(left_buffer);
-  m_led.SetData(left_buffer);
+  blue.ApplyTo(m_buffer);
+  m_led.SetData(m_buffer);
   
 
   }
@@ -135,8 +142,8 @@ void UpdateLEDCommand::Execute() {
   // }
   else if (m_DriveController->GetRawButton(4)) {
     frc::LEDPattern green = frc::LEDPattern::Solid(frc::Color::kRed);
-    green.ApplyTo(right_buffer);
-    m_led.SetData(right_buffer);
+    green.ApplyTo(m_buffer);
+    m_led.SetData(m_buffer);
   }
 
 
