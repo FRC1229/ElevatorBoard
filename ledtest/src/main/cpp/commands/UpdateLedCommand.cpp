@@ -137,12 +137,13 @@ auto m_right = std::ranges::reverse_view(std::ranges::drop_view(m_buffer, 60));
   //   // Apply the LED pattern to the data buffer
   //   pattern.ApplyTo(m_ledBuffer);
 
-  //   // Write the data to the LED strip
+  //   // Write the data to the LED strip++---------0
+  
   //   m_led.SetData(m_ledBuffer);
   // }
   else if (m_DriveController->GetRawButton(4)) {
     frc::LEDPattern green = frc::LEDPattern::Solid(frc::Color::kRed);
-    green.ApplyTo(m_buffer);
+    //green.ApplyTo(m_buffer.begin());
     m_led.SetData(m_buffer);
   }
 
