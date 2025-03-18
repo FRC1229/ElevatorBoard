@@ -34,7 +34,7 @@ void LEDSubsystem::IdleMove(int r, int g, int b, int start, int end){
     for (int i = start; i <= end; i++){
         m_ledBuffer[i].SetRGB(r,g,b);
 
-        if (end < 121){
+        if (end < 120){
             start+=1;
             end+=1;
         }

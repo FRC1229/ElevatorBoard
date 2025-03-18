@@ -72,6 +72,10 @@ void UpdateLEDCommand::Execute() {
 
 
   std::array<frc::AddressableLED::LEDData, 120> m_buffer;
+  std::array<frc::AddressableLED::LEDData, 120> leftBuffer;
+  for (int i = 0; i < 60; i++) {
+    leftBuffer[i] = m_buffer[i];
+  }
 
 
   //std::array<frc::AddressableLED::LEDData, 120> m_buffer;
@@ -111,8 +115,12 @@ auto m_right = std::ranges::reverse_view(std::ranges::drop_view(m_buffer, 60));
 
   else if (m_DriveController->GetRawButton(2)) {
     frc::LEDPattern blue = frc::LEDPattern::Solid(frc::Color::kBlue);
+  
   blue.ApplyTo(m_buffer);
-  m_led.SetData(m_buffer);
+  for (int i = 0; i < 60; i++) {
+    leftBuffer[i] = m_buffer[i];
+  }
+  m_led.SetData(leftBuffer);
   
 
   }
@@ -143,8 +151,12 @@ auto m_right = std::ranges::reverse_view(std::ranges::drop_view(m_buffer, 60));
   // }
   else if (m_DriveController->GetRawButton(4)) {
     frc::LEDPattern green = frc::LEDPattern::Solid(frc::Color::kRed);
-    //green.ApplyTo(m_buffer.begin());
-    m_led.SetData(m_buffer);
+
+    green.ApplyTo(m_buffer);
+    for (int i = 0; i < 60; i++) {
+    leftBuffer[i+60] = m_buffer[i];
+    }
+    m_led.SetData(leftBuffer);
   }
 
 
