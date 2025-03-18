@@ -19,9 +19,8 @@ extern std::array<frc::AddressableLED::LEDData, kLength>
 class LEDSubsystem : public frc2::SubsystemBase {
  public:
   LEDSubsystem();
-  
-
-
+  frc::AddressableLED m_led{8};
+  std::array<frc::AddressableLED::LEDData, 121> m_ledBuffer; 
   /**
    * Will be called periodically whenever the CommandScheduler runs.
    */
